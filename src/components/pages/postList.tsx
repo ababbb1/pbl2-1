@@ -7,7 +7,7 @@ export default function PostList() {
   usePage('home')
   return (
     <>
-      <div className='flex flex-col gap-3 w-full bg-slate-300'>
+      <div className='flex flex-col gap-3 w-full bg-gray-200'>
         {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) => (
           <PostCard key={i} />
         ))}

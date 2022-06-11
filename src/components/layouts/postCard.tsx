@@ -1,6 +1,11 @@
 import { PencilAltIcon, TrashIcon, HeartIcon } from '@heroicons/react/outline'
+import { Link } from 'react-router-dom'
+import { useSelector } from 'react-redux'
+import { getCurrentPage } from '../../store/reducer'
 
 export default function PostCard() {
+  const page = useSelector(getCurrentPage)
+
   return (
     <div className='bg-white border border-slate-100'>
       <div className='flex justify-between p-3 border-b border-b-slate-100'>
@@ -25,7 +30,13 @@ export default function PostCard() {
         <div className='p-3 text-sm text-gray-800'>
           <p>안녕하세요</p>
         </div>
-        <div className='bg-slate-700 w-full h-72'></div>
+        {page === 'detail' ? (
+          <div className='bg-slate-700 w-full h-72'></div>
+        ) : (
+          <Link to={'/post'}>
+            <div className='bg-slate-700 w-full h-72'></div>
+          </Link>
+        )}
       </div>
 
       <div className='flex justify-between items-center p-3 border-t border-t-slate-100'>

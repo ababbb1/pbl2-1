@@ -5,6 +5,7 @@ import PostList from './components/pages/postList'
 import Login from './components/pages/login'
 import Join from './components/pages/join'
 import Posting from './components/pages/posting'
+import Detail from './components/pages/detail'
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
           <Route path='/login' element={<Login />} />
           <Route path='/join' element={<Join />} />
           <Route path='/posting' element={<Posting />} />
+          <Route path='/post' element={<Detail />} />
         </Routes>
       </div>
     </BrowserRouter>

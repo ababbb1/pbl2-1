@@ -5,10 +5,12 @@ import { PlusIcon, XIcon } from '@heroicons/react/outline'
 import { cls } from '../../functions'
 import ErrorMessage from '../assets/errorMessage'
 import React, { useEffect, useState } from 'react'
+import SelectPostLayout from '../assets/selectPostLayout'
 
 interface PostForm {
   content: string
   image: string
+  layout: string
 }
 
 export default function Posting() {
@@ -47,6 +49,15 @@ export default function Posting() {
       onSubmit={handleSubmit(onValid)}
       className='flex flex-col items-center gap-6 px-4 py-16 w-full'
     >
+      <div className='w-full flex flex-col items-center gap-2'>
+        <ErrorMessage message={errors.layout?.message} />
+        <SelectPostLayout
+          register={register('layout', {
+            required: '레이아웃을 선택해주세요.',
+          })}
+        />
+      </div>
+
       <textarea
         placeholder='무슨 생각을 하고 계신가요?'
         className={cls(
