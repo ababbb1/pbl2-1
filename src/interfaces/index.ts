@@ -1,4 +1,4 @@
-export type Page = 'home' | 'login' | 'join' | 'posting' | 'detail'
+export type Page = 'home' | 'login' | 'join' | 'posting' | 'detail' | 'mypage'
 
 export interface JoinForm {
   nickname: string

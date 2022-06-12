@@ -1,18 +1,20 @@
-import { useForm } from 'react-hook-form'
-import { usePage } from '../../hooks'
+import { SubmitHandler, useForm } from 'react-hook-form'
+import { useSetPage } from '../../hooks'
 import Button from '../assets/button'
 import Input from '../assets/input'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { emailCheck } from '../../functions'
 import ErrorMessage from '../assets/errorMessage'
+import { loginRequest } from '../../functions/requests'
 
-interface LoginForm {
+export interface LoginForm {
   email: string
   password: string
 }
 
 export default function Login() {
-  usePage('login')
+  useSetPage('login')
+  const navigate = useNavigate()
 
   const {
     register,
@@ -20,9 +22,13 @@ export default function Login() {
     formState: { errors },
   } = useForm<LoginForm>()
 
-  const onValid = (data: LoginForm) => {
-    alert('login valid')
-  }
+  const onValid: SubmitHandler<LoginForm> = loginRequest(
+    (res) => {
+      localStorage.setItem('user', JSON.stringify(res.data))
+      navigate('../', { replace: true })
+    },
+    (e) => alert(e.response.data.result.errorMessage),
+  )
 
   return (
     <form

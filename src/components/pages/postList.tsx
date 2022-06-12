@@ -1,10 +1,10 @@
-import { usePage } from '../../hooks'
+import { useSetPage } from '../../hooks'
 import FloatingButton from '../assets/floatingButton'
 import PostCard from '../layouts/postCard'
 import { PencilIcon } from '@heroicons/react/outline'
 
 export default function PostList() {
-  usePage('home')
+  useSetPage('home')
   return (
     <>
       <div className='flex flex-col gap-3 w-full bg-gray-200'>

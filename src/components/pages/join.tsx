@@ -1,5 +1,5 @@
 import { useForm } from 'react-hook-form'
-import { usePage } from '../../hooks'
+import { useSetPage } from '../../hooks'
 import Button from '../assets/button'
 import Input from '../assets/input'
 import { emailCheck, registerRequest } from '../../functions'
@@ -8,7 +8,7 @@ import { JoinForm } from '../../interfaces'
 import { useNavigate } from 'react-router-dom'
 
 export default function Join() {
-  usePage('join')
+  useSetPage('join')
   const navigate = useNavigate()
 
   const {
@@ -17,14 +17,17 @@ export default function Join() {
     formState: { errors },
   } = useForm<JoinForm>()
 
-  const successRegister = () => {
-    alert('회원가입을 축하드립니다.')
-    navigate('/login')
-  }
+  const onValid = registerRequest(
+    () => {
+      alert('회원가입 성공')
+      navigate('/login')
+    },
+    (e) => alert(e.response.data.result.errorMessage),
+  )
 
   return (
     <form
-      onSubmit={handleSubmit(registerRequest(successRegister))}
+      onSubmit={handleSubmit(onValid)}
       className='flex flex-col items-center h-screen gap-5 px-4 pt-16 w-full'
     >
       <span className='mb-4 text-lg'>회원가입</span>

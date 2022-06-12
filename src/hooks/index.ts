@@ -3,9 +3,13 @@ import { Page } from '../interfaces'
 import { useDispatch } from 'react-redux'
 import { setPage } from '../store/reducer'
 
-export function usePage(page: Page) {
+export function useSetPage(page: Page) {
   const dispatch = useDispatch()
   useEffect(() => {
     dispatch(setPage(page))
   }, [])
+}
+
+export function useAuth() {
+  return localStorage.getItem('user')
 }

@@ -1,5 +1,3 @@
-import { Children, ReactComponentElement, ReactNode } from 'react'
-
 interface IconProps {
   children: JSX.Element
   text: string

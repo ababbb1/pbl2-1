@@ -1,6 +1,6 @@
 import Button from '../assets/button'
 import { useForm } from 'react-hook-form'
-import { usePage } from '../../hooks'
+import { useSetPage } from '../../hooks'
 import { PlusIcon, XIcon } from '@heroicons/react/outline'
 import { cls } from '../../functions'
 import ErrorMessage from '../assets/errorMessage'
@@ -14,7 +14,7 @@ interface PostForm {
 }
 
 export default function Posting() {
-  usePage('posting')
+  useSetPage('posting')
 
   const {
     register,
