@@ -1,9 +1,8 @@
 import { BellIcon, UserIcon, ChevronLeftIcon } from '@heroicons/react/outline'
 import { Link, useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
-import { getCurrentPage } from '../../store/reducer'
+import { getCurrentPage } from '../../store'
 import { useAuth } from '../../hooks'
-import Input from '../assets/input'
 
 export default function Nav() {
   const page = useSelector(getCurrentPage)

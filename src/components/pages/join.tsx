@@ -1,12 +1,9 @@
 import { useForm } from 'react-hook-form'
 import { useSetPage } from '../../hooks'
-import Button from '../assets/button'
-import Input from '../assets/input'
 import { emailCheck, registerRequest } from '../../functions'
-import ErrorMessage from '../assets/errorMessage'
 import { JoinForm } from '../../interfaces'
 import { useNavigate } from 'react-router-dom'
-import { AxiosError } from 'axios'
+import { Button, Input, ErrorMessage } from '../../components'
 
 export default function Join() {
   useSetPage('join')

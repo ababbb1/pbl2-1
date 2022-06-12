@@ -1,7 +1,7 @@
 import { PencilAltIcon, TrashIcon, HeartIcon } from '@heroicons/react/outline'
 import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
-import { getCurrentPage } from '../../store/reducer'
+import { getCurrentPage } from '../../store'
 
 export default function PostCard() {
   const page = useSelector(getCurrentPage)

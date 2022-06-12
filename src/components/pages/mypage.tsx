@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { useSetPage } from '../../hooks'
-import Button from '../assets/button'
+import { Button } from '../../components'
 
 export default function Mypage() {
   useSetPage('mypage')

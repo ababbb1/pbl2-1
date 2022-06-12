@@ -1,13 +1,6 @@
 import React from 'react'
-import Nav from './components/layouts/nav'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import PostList from './components/pages/postList'
-import Login from './components/pages/login'
-import Join from './components/pages/join'
-import Posting from './components/pages/posting'
-import Detail from './components/pages/detail'
-import Mypage from './components/pages/mypage'
-import Redirect from './components/route/redirect'
+import { PostList, Login, Join, Posting, Detail, Mypage, Redirect, Nav } from './components'
 
 function App() {
   return (

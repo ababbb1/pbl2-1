@@ -9,10 +9,10 @@ export interface RequestConfig {
 
 export type ResponseSuccessCallback =
   | (() => void)
-  | ((res: AxiosResponse<any, any>) => void)
-  | ((res: AxiosResponse<any, any>) => unknown)
+  | ((res: AxiosResponse<unknown, unknown>) => void)
+  | ((res: AxiosResponse<unknown, unknown>) => unknown)
 
 export type ResponseFailCallback =
   | (() => void)
-  | ((res: AxiosError<any, any>) => void)
-  | ((res: AxiosError<any, any>) => unknown)
+  | ((res: AxiosError<unknown, unknown>) => void)
+  | ((res: AxiosError<unknown, unknown>) => unknown)

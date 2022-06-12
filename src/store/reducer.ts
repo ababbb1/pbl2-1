@@ -7,12 +7,12 @@ interface AppState {
   token: string
 }
 
-export const initialState: AppState = {
+const initialState: AppState = {
   currentPage: 'home',
   token: '',
 }
 
-export const slice = createSlice({
+const slice = createSlice({
   name: 'App',
   initialState,
   reducers: {

@@ -1,12 +1,8 @@
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { useSetPage } from '../../hooks'
-import Button from '../assets/button'
-import Input from '../assets/input'
+import { Button, Input, ErrorMessage } from '../../components'
 import { Link, useNavigate } from 'react-router-dom'
-import { emailCheck } from '../../functions'
-import ErrorMessage from '../assets/errorMessage'
-import { loginRequest } from '../../functions/requests'
-import { AxiosError } from 'axios'
+import { emailCheck, loginRequest } from '../../functions'
 
 export interface LoginForm {
   email: string

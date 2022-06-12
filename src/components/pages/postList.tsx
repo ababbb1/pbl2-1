@@ -1,6 +1,5 @@
 import { useSetPage } from '../../hooks'
-import FloatingButton from '../assets/floatingButton'
-import PostCard from '../layouts/postCard'
+import { FloatingButton, PostCard } from '../../components'
 import { PencilIcon } from '@heroicons/react/outline'
 
 export default function PostList() {

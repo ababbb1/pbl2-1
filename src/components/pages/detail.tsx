@@ -1,5 +1,5 @@
 import { useSetPage } from '../../hooks'
-import PostCard from '../layouts/postCard'
+import { PostCard } from '../../components'
 
 export default function Detail() {
   useSetPage('detail')
