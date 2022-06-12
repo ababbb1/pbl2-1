@@ -31,10 +31,10 @@ export default function PostCard() {
           <p>안녕하세요</p>
         </div>
         {page === 'detail' ? (
-          <div className='bg-slate-700 w-full h-72'></div>
+          <div className='bg-slate-700 w-full h-72 md:h-80'></div>
         ) : (
           <Link to={'/post'}>
-            <div className='bg-slate-700 w-full h-72'></div>
+            <div className='bg-slate-700 w-full h-72 md:h-80'></div>
           </Link>
         )}
       </div>

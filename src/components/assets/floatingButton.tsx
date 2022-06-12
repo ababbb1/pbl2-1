@@ -9,7 +9,7 @@ interface FloatingButtonProps {
 export default function FloatingButton({ path, children }: FloatingButtonProps) {
   return (
     <Link to={path}>
-      <div className='fixed bottom-4 right-4 w-12 h-12 rounded-full bg-theme1 flex justify-center items-center shadow-sm'>
+      <div className='fixed bottom-4 right-4 w-12 h-12 rounded-full bg-theme1 flex justify-center items-center shadow-sm lg:hidden'>
         {children}
       </div>
     </Link>

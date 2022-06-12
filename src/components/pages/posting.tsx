@@ -6,12 +6,9 @@ import { cls } from '../../functions'
 import ErrorMessage from '../assets/errorMessage'
 import React, { useEffect, useState } from 'react'
 import SelectPostLayout from '../assets/selectPostLayout'
-
-interface PostForm {
-  content: string
-  image: string
-  layout: string
-}
+import { postingRequest } from '../../functions/requests'
+import { AxiosError, AxiosResponse } from 'axios'
+import { PostForm } from '../../interfaces'
 
 export default function Posting() {
   useSetPage('posting')
@@ -22,7 +19,7 @@ export default function Posting() {
     watch,
     resetField,
     formState: { errors },
-  } = useForm<PostForm>()
+  } = useForm<PostForm>({ mode: 'onBlur' })
   const [previewImg, setPreviewImg] = useState('')
   const images = watch('image')
 
@@ -34,12 +31,9 @@ export default function Posting() {
     }
   }, [images])
 
-  const onValid = (data: PostForm) => {
-    console.log(data)
-    alert('upload valid')
-  }
+  const onValid = postingRequest((res: AxiosResponse<any, any>) => console.log(res))
 
-  const handleResetBtn = () => {
+  const handleImageResetBtn = () => {
     setPreviewImg('')
     resetField('image')
   }
@@ -47,7 +41,7 @@ export default function Posting() {
   return (
     <form
       onSubmit={handleSubmit(onValid)}
-      className='flex flex-col items-center gap-6 px-4 py-16 w-full'
+      className='flex flex-col items-center gap-6 px-4 py-16 w-full md:max-w-md'
     >
       <div className='w-full flex flex-col items-center gap-2'>
         <ErrorMessage message={errors.layout?.message} />
@@ -77,7 +71,7 @@ export default function Posting() {
             <>
               <img src={previewImg} alt='preview-img' className='w-full' />
               <div
-                onClick={handleResetBtn}
+                onClick={handleImageResetBtn}
                 className='absolute w-7 h-7 top-2 right-2 bg-slate-200 rounded-full shadow-sm flex justify-center items-center hover:cursor-pointer'
               >
                 <XIcon className='w-6 h-6 text-slate-600' />

@@ -6,6 +6,7 @@ import { emailCheck, registerRequest } from '../../functions'
 import ErrorMessage from '../assets/errorMessage'
 import { JoinForm } from '../../interfaces'
 import { useNavigate } from 'react-router-dom'
+import { AxiosError } from 'axios'
 
 export default function Join() {
   useSetPage('join')
@@ -15,20 +16,17 @@ export default function Join() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<JoinForm>()
+  } = useForm<JoinForm>({ mode: 'onBlur' })
 
-  const onValid = registerRequest(
-    () => {
-      alert('회원가입 성공')
-      navigate('/login')
-    },
-    (e) => alert(e.response.data.result.errorMessage),
-  )
+  const onValid = registerRequest(() => {
+    alert('회원가입 성공')
+    navigate('/login')
+  })
 
   return (
     <form
       onSubmit={handleSubmit(onValid)}
-      className='flex flex-col items-center h-screen gap-5 px-4 pt-16 w-full'
+      className='flex flex-col items-center h-screen gap-5 px-4 pt-16 w-full max-w-sm'
     >
       <span className='mb-4 text-lg'>회원가입</span>
       <div className='w-full'>
@@ -70,11 +68,11 @@ export default function Join() {
       <div className='flex flex-col gap-2 w-full'>
         <Input
           register={register('nickname', {
-            required: '이름을 입력해주세요.',
+            required: '닉네임을 입력해주세요.',
           })}
-          placeholder='이름'
+          placeholder='닉네임'
           type='text'
-          label='이름'
+          label='닉네임'
           invalid={errors.nickname}
         />
         <ErrorMessage message={errors.nickname?.message} />

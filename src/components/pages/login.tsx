@@ -6,6 +6,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { emailCheck } from '../../functions'
 import ErrorMessage from '../assets/errorMessage'
 import { loginRequest } from '../../functions/requests'
+import { AxiosError } from 'axios'
 
 export interface LoginForm {
   email: string
@@ -20,20 +21,17 @@ export default function Login() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<LoginForm>()
+  } = useForm<LoginForm>({ mode: 'onBlur' })
 
-  const onValid: SubmitHandler<LoginForm> = loginRequest(
-    (res) => {
-      localStorage.setItem('user', JSON.stringify(res.data))
-      navigate('../', { replace: true })
-    },
-    (e) => alert(e.response.data.result.errorMessage),
-  )
+  const onValid: SubmitHandler<LoginForm> = loginRequest((res) => {
+    localStorage.setItem('user', JSON.stringify(res.data))
+    navigate('../', { replace: true })
+  })
 
   return (
     <form
       onSubmit={handleSubmit(onValid)}
-      className='flex flex-col items-center h-screen gap-4 px-4 pt-24 w-full'
+      className='flex flex-col items-center h-screen gap-4 px-4 pt-24 w-full max-w-sm'
     >
       <span className='mb-4 text-lg'>로그인</span>
 

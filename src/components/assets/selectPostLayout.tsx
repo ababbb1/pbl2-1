@@ -1,17 +1,16 @@
-export default function SelectPostLayout({ register }: { register: any }) {
+import { UseFormRegisterReturn } from 'react-hook-form'
+
+export default function SelectPostLayout({
+  register,
+}: {
+  register: UseFormRegisterReturn<'layout'>
+}) {
   return (
     <div className='flex flex-col w-full gap-2 items-center'>
       <span>레이아웃 선택</span>
       <ul className='flex justify-center gap-6'>
         <li>
-          <input
-            type='radio'
-            name='layout'
-            id='default'
-            value='default'
-            className='peer hidden'
-            {...register}
-          />
+          <input type='radio' id='default' value='default' className='peer hidden' {...register} />
           <label
             htmlFor='default'
             className='flex flex-col w-10 h-10 bg-gray-200 rounded-sm shadow-md mx-1 hover:cursor-pointer peer-checked:w-14 peer-checked:h-14 peer-checked:bg-gray-300 peer-checked:ring ring-theme1'
@@ -28,14 +27,7 @@ export default function SelectPostLayout({ register }: { register: any }) {
         </li>
 
         <li>
-          <input
-            type='radio'
-            name='layout'
-            id='left'
-            value='left'
-            className='peer hidden'
-            {...register}
-          />
+          <input type='radio' id='left' value='left' className='peer hidden' {...register} />
           <label
             htmlFor='left'
             className='flex w-12 h-10 bg-gray-200 rounded-sm shadow-md hover:cursor-pointer peer-checked:w-16 peer-checked:h-14 peer-checked:bg-gray-300 peer-checked:ring ring-theme1'
@@ -55,14 +47,7 @@ export default function SelectPostLayout({ register }: { register: any }) {
         </li>
 
         <li>
-          <input
-            type='radio'
-            name='layout'
-            id='right'
-            value='right'
-            className='peer hidden'
-            {...register}
-          />
+          <input type='radio' id='right' value='right' className='peer hidden' {...register} />
           <label
             htmlFor='right'
             className='flex w-12 h-10 bg-gray-200 rounded-sm shadow-md hover:cursor-pointer peer-checked:w-16 peer-checked:h-14 peer-checked:bg-gray-300 peer-checked:ring ring-theme1'

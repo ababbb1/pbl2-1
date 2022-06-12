@@ -1,8 +1,19 @@
-export type Page = 'home' | 'login' | 'join' | 'posting' | 'detail' | 'mypage'
+import {
+  RequestConfig,
+  RequestMethod,
+  ResponseFailCallback,
+  ResponseSuccessCallback,
+  AppPathName,
+} from './api'
+import { Page, JoinForm, PostForm } from './app'
 
-export interface JoinForm {
-  nickname: string
-  email: string
-  password: string
-  passwordCheck: string
+export type {
+  AppPathName,
+  RequestConfig,
+  RequestMethod,
+  ResponseFailCallback,
+  ResponseSuccessCallback,
+  Page,
+  JoinForm,
+  PostForm,
 }

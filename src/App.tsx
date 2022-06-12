@@ -13,7 +13,7 @@ function App() {
   return (
     <BrowserRouter>
       <Nav />
-      <div className='w-full pt-12'>
+      <div className='w-full pt-12 lg:pt-16 flex justify-center'>
         <Routes>
           {/* public */}
           <Route path='/' element={<PostList />} />
