@@ -3,5 +3,5 @@ import { PostCard } from '../../components'
 
 export default function Detail() {
   useSetPage('detail')
-  return <PostCard />
+  return null
 }

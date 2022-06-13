@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { Page } from '../interfaces'
-import { useDispatch } from 'react-redux'
-import { setPage } from '../store/reducer'
+import { useDispatch, useSelector } from 'react-redux'
+import { getToken, setPage } from '../store/reducer'
 
 export function useSetPage(page: Page) {
   const dispatch = useDispatch()
@@ -11,5 +11,7 @@ export function useSetPage(page: Page) {
 }
 
 export function useAuth() {
-  return localStorage.getItem('user')
+  // const token = useSelector(getToken)
+  // return token
+  return localStorage.getItem('token')
 }

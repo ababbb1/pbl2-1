@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { getCurrentPage } from '../../store'
 
-export default function PostCard() {
+export default function PostCard({item}: {item:any}) {
   const page = useSelector(getCurrentPage)
 
   return (
@@ -28,7 +28,7 @@ export default function PostCard() {
 
       <div>
         <div className='p-3 text-sm text-gray-800'>
-          <p>안녕하세요</p>
+          <p>{item && 'content'}</p>
         </div>
         {page === 'detail' ? (
           <div className='bg-slate-700 w-full h-72 md:h-80'></div>

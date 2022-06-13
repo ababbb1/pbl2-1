@@ -7,8 +7,8 @@ export default function Mypage() {
   const navigate = useNavigate()
 
   const logoutHandler = () => {
-    localStorage.removeItem('user')
-    navigate('../', { replace: true })
+    localStorage.removeItem('token')
+    navigate('/', { replace: true })
   }
 
   return (

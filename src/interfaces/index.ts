@@ -1,5 +1,4 @@
 import {
-  RequestConfig,
   RequestMethod,
   ResponseFailCallback,
   ResponseSuccessCallback,
@@ -9,7 +8,6 @@ import { Page, JoinForm, PostForm } from './app'
 
 export type {
   AppPathName,
-  RequestConfig,
   RequestMethod,
   ResponseFailCallback,
   ResponseSuccessCallback,

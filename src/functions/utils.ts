@@ -1,3 +1,5 @@
+import { writeFile } from 'fs'
+
 export function cls(...classnames: string[]) {
   return classnames.join(' ')
 }

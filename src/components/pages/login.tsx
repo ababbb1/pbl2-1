@@ -3,6 +3,7 @@ import { useSetPage } from '../../hooks'
 import { Button, Input, ErrorMessage } from '../../components'
 import { Link, useNavigate } from 'react-router-dom'
 import { emailCheck, loginRequest } from '../../functions'
+import { AxiosResponse } from 'axios'
 
 export interface LoginForm {
   email: string
@@ -19,9 +20,11 @@ export default function Login() {
     formState: { errors },
   } = useForm<LoginForm>({ mode: 'onBlur' })
 
-  const onValid: SubmitHandler<LoginForm> = loginRequest((res) => {
-    localStorage.setItem('user', JSON.stringify(res.data))
-    navigate('../', { replace: true })
+  const onValid: SubmitHandler<LoginForm> = loginRequest((res: AxiosResponse<any, any>) => {
+    console.log(res.data)
+    localStorage.setItem('token', JSON.stringify(res.data.result.token))
+    navigate('/', { replace: true })
+    console.log(localStorage.getItem('token'))
   })
 
   return (

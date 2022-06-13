@@ -10,5 +10,5 @@ export interface JoinForm {
 export interface PostForm {
   content: string
   image: string
-  layout: string
+  layout: 'default' | 'left' | 'right'
 }
