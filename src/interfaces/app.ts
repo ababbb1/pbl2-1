@@ -18,6 +18,7 @@ export interface IUser {
   iat: number
   id: number
   nickname: string
+  userId: number
 }
 
 export interface IPost {

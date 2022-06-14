@@ -40,17 +40,25 @@ export default function Posting() {
     }
   }, [images])
 
-  const onValid = state
-    ? postModifyRequest(state.postId)((res: AxiosResponse) => {
-        console.log(state.postId, res)
-        alert('게시글이 수정되었습니다.')
-        navigate('/', { replace: true })
-      })
-    : postingRequest((res: AxiosResponse) => {
-        console.log(res)
-        alert('게시글이 등록되었습니다.')
-        navigate('/', { replace: true })
-      })
+  // const onValid = state
+  //   ? postModifyRequest(state.postId)((res: AxiosResponse) => {
+  //       console.log(state.postId, res)
+  //       alert('게시글이 수정되었습니다.')
+  //       navigate('/', { replace: true })
+  //     })
+  const onValid = (data: any) => {
+    const formData = new FormData()
+    formData.append('content', data.content)
+    formData.append('image', data.image[0])
+    formData.append('layout', data.layout)
+
+    console.dir(formData)
+    postingRequest((res: AxiosResponse) => {
+      console.log(res)
+      alert('게시글이 등록되었습니다.')
+      navigate('/', { replace: true })
+    })(formData)
+  }
 
   const handleImageResetBtn = () => {
     setPreviewImg('')

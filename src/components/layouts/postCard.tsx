@@ -14,6 +14,8 @@ export default function PostCard({ item }: { item: IPost }) {
   const navigate = useNavigate()
 
   useEffect(() => {
+    console.log(user?.userId)
+    console.log(item.userId)
     const pre = div.current?.firstChild
     const str = pre?.textContent
     if (str && str.length > 22) {
@@ -22,19 +24,19 @@ export default function PostCard({ item }: { item: IPost }) {
     }
   }, [])
 
-  const handlePostDelete = () => {
-    postDeleteRequest(item.postId)((res: AxiosResponse) => {
-      alert('게시글이 삭제되었습니다.')
-      navigate('/', { replace: true })
-    })
-  }
+  // const handlePostDelete = () => {
+  //   postDeleteRequest(item.postId)((res: AxiosResponse) => {
+  //     alert('게시글이 삭제되었습니다.')
+  //     navigate('/', { replace: true })
+  //   })
+  // }
 
-  const handleLikeBtn = () => {
-      likeRequest(item.postId)((res: AxiosResponse) => {
-          console.log(res)
-          navigate('/')
-        })
-  }
+  // const handleLikeBtn = () => {
+  //   likeRequest(item.postId)((res: AxiosResponse) => {
+  //     console.log(res)
+  //     navigate('/')
+  //   })
+  // }
 
   return (
     <div className='bg-white border border-slate-100'>
@@ -55,9 +57,9 @@ export default function PostCard({ item }: { item: IPost }) {
             >
               <PencilAltIcon className='w-6 h-6 text-theme1' />
             </div>
-            <div onClick={handlePostDelete}>
+            {/* <div onClick={handlePostDelete}>
               <TrashIcon className='w-6 h-6 text-theme1' />
-            </div>
+            </div> */}
           </div>
         ) : null}
       </div>
@@ -76,17 +78,19 @@ export default function PostCard({ item }: { item: IPost }) {
             </span>
           </div>
         </div>
-        <div className='bg-slate-700 w-full h-72 md:h-80'></div>
+        <div className='w-full h-72 md:h-80'>
+          <img src={`http://localhost:8080/images/${item.image}`} />
+        </div>
       </div>
 
       <div className='flex justify-between items-center p-3 border-t border-t-slate-100'>
         <span className='text-sm'>좋아요 0개</span>
         <span>
-          {item.likeByMe === 'true' ? (
+          {/* {item.likeByMe === 'true' ? (
             <HeartIconSolid className='w-6 h-6 text-red-400' onClick={handleLikeBtn} />
           ) : (
             <HeartIcon className='w-6 h-6 text-gray-600' onClick={handleLikeBtn} />
-          )}
+          )} */}
         </span>
       </div>
     </div>

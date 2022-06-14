@@ -1,6 +1,7 @@
 import { useAuth } from '../hooks'
 import jwtDecode from 'jwt-decode'
 import { IUser } from '../interfaces/app'
+import { entries, map, pipe } from '@fxts/core'
 
 export function cls(...classnames: string[]) {
   return classnames.join(' ')
@@ -19,3 +20,12 @@ export const getUserInfo = () => {
     return user
   }
 }
+
+// export const objectToFormData = (data: {[k: string]: any}) => {
+//   const formData = new FormData()
+//   pipe(
+//     data,
+//     entries,
+//     map(x => formData.append(...x)
+//   )
+// }

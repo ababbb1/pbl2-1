@@ -23,10 +23,16 @@ export default function PostList() {
   const [list, setList] = useState([])
 
   useEffect(() => {
+    console.log('rendered')
     getPostsRequest((res: AxiosResponse) => {
-      setList(res.data)
+      console.log(res)
+      setList(res.data.post_list)
     })()
   }, [])
+
+  useEffect(() => {
+    console.log(list)
+  }, [list])
 
   const Row = ({ index, style }: { index: number; style: any; data: any }) => {
     return (

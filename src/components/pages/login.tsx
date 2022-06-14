@@ -22,8 +22,8 @@ export default function Login() {
 
   const onValid: SubmitHandler<LoginForm> = loginRequest((res: AxiosResponse<any, any>) => {
     console.log(res.data)
-    localStorage.setItem('token', JSON.stringify(res.data.result.token))
-    navigate('/', { replace: true })
+    localStorage.setItem('token', JSON.stringify(res.data.token))
+    navigate('../', { replace: true })
     console.log(localStorage.getItem('token'))
   })
 
