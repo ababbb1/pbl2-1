@@ -46,6 +46,15 @@ function App() {
               </Redirect>
             }
           />
+
+          <Route
+            path='/modify/:id'
+            element={
+              <Redirect type='private'>
+                <Posting />
+              </Redirect>
+            }
+          />
         </Routes>
       </div>
     </BrowserRouter>

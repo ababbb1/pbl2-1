@@ -1,7 +1,6 @@
 import { AxiosError, AxiosResponse } from 'axios'
 
-export type RequestMethod = 'get' | 'post'
-export type AppPathName = 'login' | 'register' | 'post'
+export type RequestMethod = 'get' | 'post' | 'put'
 
 export type ResponseSuccessCallback =
   | (() => void)

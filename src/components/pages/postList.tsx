@@ -1,53 +1,69 @@
 import { useSetPage } from '../../hooks'
 import { FloatingButton, PostCard } from '../../components'
 import { PencilIcon } from '@heroicons/react/outline'
-import InfiniteScroll from 'react-infinite-scroller'
-// import { getPostsRequest } from '../../functions/requests'
-import { useCallback, useEffect, useState } from 'react'
+import { FixedSizeList } from 'react-window'
+import InfiniteLoader from 'react-window-infinite-loader'
+import { useEffect, useState } from 'react'
 import { AxiosResponse } from 'axios'
-import parseLinkHeader from 'parse-link-header'
+import { getPostsRequest } from '../../functions'
+
+const LOADING = 1
+const LOADED = 2
+const itemStatusMap: { [k: number]: any } = {}
+
+const isItemLoaded = (index: number) => !!itemStatusMap[index]
+const loadMoreItems = (startIndex: number, stopIndex: number) => {
+  for (let index = startIndex; index <= stopIndex; index++) {
+    itemStatusMap[index] = LOADED
+  }
+}
 
 export default function PostList() {
   useSetPage('home')
-  // const [items, setItems] = useState([])
+  const [list, setList] = useState([])
 
-  // useEffect(() => {
-  //   getPostsRequest((res: AxiosResponse) => {
-  //     console.log(res)
-  //     setItems(res.data.slice(0, 10))
-  //   })()
-  // }, [])
+  useEffect(() => {
+    getPostsRequest((res: AxiosResponse) => {
+      setList(res.data)
+    })()
+  }, [])
 
-  // const fetchData = () => {
-  //   getPostsRequest((res: AxiosResponse) => {
-  //     setItems(res.data.slice(0, 10))
-  //   })
-  // }
-
-  // const loader = (
-  //   <div key="loader" className="loader">
-  //     Loading ...
-  //   </div>
-  // );
+  const Row = ({ index, style }: { index: number; style: any; data: any }) => {
+    return (
+      <div
+        className='ListItem'
+        style={{
+          ...style,
+        }}
+      >
+        <PostCard item={list[index]} />
+      </div>
+    )
+  }
 
   return (
-    <div className='w-full bg-gray-200 min-h-screen flex justify-center pb-16'>
-    {/* //   <div>
-    //   <InfiniteScroll
-    //   loadMore={() => getPostsRequest((res: AxiosResponse) => {
-    //     console.log(res.data)
-    //     setItems(res.data.slice(0, 10))
-    //   })()}
-    //   hasMore={true}
-    //   loader={loader}
-    // >
-    //   <ul>
-    //     {items.map((item: any, i: number) => (
-    //       <div key={i}>{item.content}</div>
-    //     ))}
-    //   </ul>
-    // </InfiniteScroll>
-    //   </div> */}
+    <div className='w-full bg-gray-200 min-h-screen flex justify-center'>
+      <div className='w-full max-w-md'>
+        <InfiniteLoader
+          isItemLoaded={isItemLoaded}
+          itemCount={list.length}
+          loadMoreItems={loadMoreItems}
+        >
+          {({ onItemsRendered, ref }) => (
+            <FixedSizeList
+              className='List'
+              height={10000}
+              itemCount={list.length}
+              itemSize={500}
+              onItemsRendered={onItemsRendered}
+              ref={ref}
+              width={'100%'}
+            >
+              {Row}
+            </FixedSizeList>
+          )}
+        </InfiniteLoader>
+      </div>
 
       <FloatingButton path={'/posting'}>
         <PencilIcon className='text-white w-6 h-6' />

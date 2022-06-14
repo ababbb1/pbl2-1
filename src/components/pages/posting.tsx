@@ -1,12 +1,12 @@
-import Button from '../assets/button'
 import { useForm } from 'react-hook-form'
 import { useSetPage } from '../../hooks'
 import { PlusIcon, XIcon } from '@heroicons/react/outline'
-import { cls, postingRequest } from '../../functions'
-import { ErrorMessage, SelectPostLayout } from '../../components'
-import React, { useEffect, useState } from 'react'
+import { cls, postingRequest, postModifyRequest } from '../../functions'
+import { ErrorMessage, SelectPostLayout, Button } from '../../components'
+import React, { useEffect, useRef, useState } from 'react'
 import { AxiosResponse } from 'axios'
 import { PostForm } from '../../interfaces'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 export default function Posting() {
   useSetPage('posting')
@@ -16,24 +16,55 @@ export default function Posting() {
     handleSubmit,
     watch,
     resetField,
+    setValue,
+    getValues,
     formState: { errors },
-  } = useForm<PostForm>({ mode: 'onBlur' })
+  } = useForm<PostForm>({ mode: 'onChange' })
   const [previewImg, setPreviewImg] = useState('')
+  const { state }: any = useLocation()
+  const navigate = useNavigate()
+  const contentResetBtn = useRef<HTMLDivElement>(null)
   const images = watch('image')
+
+  useEffect(() => {
+    if (state) {
+      setValue('content', state.content)
+      contentResetBtn.current?.classList.remove('hidden')
+    }
+  }, [])
 
   useEffect(() => {
     if (images && images.length > 0) {
       const file: any = images[0]
       setPreviewImg(URL.createObjectURL(file))
-      console.log(images)
     }
   }, [images])
 
-  const onValid = postingRequest((res: AxiosResponse<any, any>) => console.log(res))
+  const onValid = state
+    ? postModifyRequest(state.postId)((res: AxiosResponse) => {
+        console.log(state.postId)
+        alert('게시글이 수정되었습니다.')
+        navigate('/', { replace: true })
+      })
+    : postingRequest((res: AxiosResponse) => {
+        alert('게시글이 등록되었습니다.')
+        navigate('/', { replace: true })
+      })
 
   const handleImageResetBtn = () => {
     setPreviewImg('')
     resetField('image')
+  }
+
+  const handleContentResetBtn = () => {
+    resetField('content')
+    contentResetBtn.current?.classList.add('hidden')
+  }
+
+  const handleContentChange = () => {
+    getValues('content')
+      ? contentResetBtn.current?.classList.remove('hidden')
+      : contentResetBtn.current?.classList?.add('hidden')
   }
 
   return (
@@ -50,18 +81,28 @@ export default function Posting() {
         />
       </div>
 
-      <textarea
-        placeholder='무슨 생각을 하고 계신가요?'
-        className={cls(
-          'w-full h-48 resize-none p-2 border rounded-md',
-          errors.content
-            ? 'border-red-400 focus:outline-red-400'
-            : 'border-gray-300 focus:outline-gray-500',
-        )}
-        {...register('content', {
-          required: true,
-        })}
-      />
+      <div className='w-full relative'>
+        <textarea
+          placeholder='무슨 생각을 하고 계신가요?'
+          className={cls(
+            'w-full h-48 resize-none py-5 px-7 border rounded-md',
+            errors.content
+              ? 'border-red-400 focus:outline-red-400'
+              : 'border-gray-300 focus:outline-gray-500',
+          )}
+          {...register('content', {
+            required: true,
+            onChange: handleContentChange,
+          })}
+        />
+        <div
+          ref={contentResetBtn}
+          onClick={handleContentResetBtn}
+          className='hidden absolute w-5 h-5 top-2 right-2 bg-slate-200 rounded-full shadow-sm flex justify-center items-center hover:cursor-pointer'
+        >
+          <XIcon className='w-4 h-4 text-slate-600' />
+        </div>
+      </div>
 
       <div className='w-full border border-gray-300 rounded-md p-2'>
         <div className='w-full relative'>

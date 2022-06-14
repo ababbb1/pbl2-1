@@ -1,17 +1,13 @@
-import {
-  RequestMethod,
-  ResponseFailCallback,
-  ResponseSuccessCallback,
-  AppPathName,
-} from './api'
-import { Page, JoinForm, PostForm } from './app'
+import { RequestMethod, ResponseFailCallback, ResponseSuccessCallback } from './api'
+import { Page, JoinForm, PostForm, IPost, IUser } from './app'
 
 export type {
-  AppPathName,
   RequestMethod,
   ResponseFailCallback,
   ResponseSuccessCallback,
   Page,
   JoinForm,
   PostForm,
+  IPost,
+  IUser,
 }
