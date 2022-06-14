@@ -7,7 +7,7 @@ import {
   postModifyRequest,
   postDeleteRequest,
   likeRequest,
-  unLikeRequest
+  unLikeRequest,
 } from './requests'
 
 export {
@@ -21,5 +21,5 @@ export {
   postModifyRequest,
   postDeleteRequest,
   likeRequest,
-  unLikeRequest
+  unLikeRequest,
 }

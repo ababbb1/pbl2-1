@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { Page } from '../interfaces'
-import { useDispatch, useSelector } from 'react-redux'
-import { getToken, setPage } from '../store/reducer'
+import { useDispatch } from 'react-redux'
+import { setPage } from '../store/reducer'
 
 export function useSetPage(page: Page) {
   const dispatch = useDispatch()

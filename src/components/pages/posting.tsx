@@ -42,11 +42,12 @@ export default function Posting() {
 
   const onValid = state
     ? postModifyRequest(state.postId)((res: AxiosResponse) => {
-        console.log(state.postId)
+        console.log(state.postId, res)
         alert('게시글이 수정되었습니다.')
         navigate('/', { replace: true })
       })
     : postingRequest((res: AxiosResponse) => {
+        console.log(res)
         alert('게시글이 등록되었습니다.')
         navigate('/', { replace: true })
       })

@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { useEffect, useRef } from 'react'
 import { cls, getUserInfo } from '../../functions'
 import { IPost } from '../../interfaces'
-import { likeRequest, postDeleteRequest, unLikeRequest } from '../../functions/requests'
+import { likeRequest, postDeleteRequest } from '../../functions/requests'
 import { AxiosResponse } from 'axios'
 
 export default function PostCard({ item }: { item: IPost }) {
@@ -29,13 +29,8 @@ export default function PostCard({ item }: { item: IPost }) {
     })
   }
 
-  const handleLikeBtn = (is: boolean) => {
-    is
-      ? likeRequest(item.postId)((res: AxiosResponse) => {
-          console.log(res)
-          navigate('/')
-        })
-      : unLikeRequest(item.postId)((res: AxiosResponse) => {
+  const handleLikeBtn = () => {
+      likeRequest(item.postId)((res: AxiosResponse) => {
           console.log(res)
           navigate('/')
         })
@@ -88,9 +83,9 @@ export default function PostCard({ item }: { item: IPost }) {
         <span className='text-sm'>좋아요 0개</span>
         <span>
           {item.likeByMe === 'true' ? (
-            <HeartIconSolid className='w-6 h-6 text-red-400' onClick={() => handleLikeBtn(true)} />
+            <HeartIconSolid className='w-6 h-6 text-red-400' onClick={handleLikeBtn} />
           ) : (
-            <HeartIcon className='w-6 h-6 text-gray-600' onClick={() => handleLikeBtn(false)} />
+            <HeartIcon className='w-6 h-6 text-gray-600' onClick={handleLikeBtn} />
           )}
         </span>
       </div>

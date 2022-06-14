@@ -37,6 +37,7 @@ export const postingRequest = requestReducer('post', 'post', {
   headers: { ...postHeaders, ...tokenHeaders },
 })
 export const getPostsRequest = requestReducer('get', 'post')
+
 export const postModifyRequest = (postId: number) =>
   requestReducer('post', `post/${postId}`, {
     headers: { ...postHeaders, ...tokenHeaders },
@@ -47,11 +48,6 @@ export const postDeleteRequest = (postId: number) =>
   })
 
 export const likeRequest = (postId: number) =>
-  requestReducer('post', `post/${postId}/like`, {
-    headers: { ...postHeaders, ...tokenHeaders },
-  })
-
-export const unLikeRequest = (postId: number) =>
   requestReducer('post', `post/${postId}/like`, {
     headers: { ...postHeaders, ...tokenHeaders },
   })
