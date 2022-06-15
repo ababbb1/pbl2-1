@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { useSetPage } from '../../hooks'
-import { Button } from '../../components'
+import Button from '../assets/button'
 
 export default function Mypage() {
   useSetPage('mypage')
@@ -8,6 +8,7 @@ export default function Mypage() {
 
   const logoutHandler = () => {
     localStorage.removeItem('token')
+    alert('로그아웃 되었습니다.')
     navigate('/', { replace: true })
   }
 

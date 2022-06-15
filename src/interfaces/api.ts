@@ -1,6 +1,14 @@
 import { AxiosError, AxiosResponse } from 'axios'
 
-export type RequestMethod = 'get' | 'post' | 'put'
+export type RequestMethod =
+  | 'request'
+  | 'get'
+  | 'post'
+  | 'delete'
+  | 'head'
+  | 'options'
+  | 'put'
+  | 'patch'
 
 export type ResponseSuccessCallback =
   | (() => void)

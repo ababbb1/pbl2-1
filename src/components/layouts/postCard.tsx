@@ -2,20 +2,27 @@ import { PencilAltIcon, TrashIcon, HeartIcon } from '@heroicons/react/outline'
 import { HeartIcon as HeartIconSolid } from '@heroicons/react/solid'
 import { useNavigate } from 'react-router-dom'
 import { useEffect, useRef } from 'react'
-import { cls, getUserInfo } from '../../functions'
-import { IPost } from '../../interfaces'
-import { likeRequest, postDeleteRequest } from '../../functions/requests'
-import { AxiosResponse } from 'axios'
+import axios, { AxiosResponse } from 'axios'
+import { cls, getItemsFromDateObject, getUserInfo, urlToFile } from '../../functions/utils'
+import { IPost } from '../../interfaces/app'
+import {
+  apiErrorHandler,
+  APP_DOMAIN,
+  authHeaders,
+  contentTypeHeaders,
+  getPostRequest,
+} from '../../functions/requests'
+import { useDispatch } from 'react-redux'
 
 export default function PostCard({ item }: { item: IPost }) {
   const div = useRef<HTMLDivElement>(null)
   const span = useRef<HTMLSpanElement>(null)
   const user = getUserInfo()
   const navigate = useNavigate()
+  const dispatch = useDispatch()
+  const t = getItemsFromDateObject(new Date(item.createdAt))
 
   useEffect(() => {
-    console.log(user?.userId)
-    console.log(item.userId)
     const pre = div.current?.firstChild
     const str = pre?.textContent
     if (str && str.length > 22) {
@@ -24,19 +31,32 @@ export default function PostCard({ item }: { item: IPost }) {
     }
   }, [])
 
-  // const handlePostDelete = () => {
-  //   postDeleteRequest(item.postId)((res: AxiosResponse) => {
-  //     alert('게시글이 삭제되었습니다.')
-  //     navigate('/', { replace: true })
-  //   })
-  // }
+  const handlePostDelete = () => {
+    axios({
+      method: 'delete',
+      url: `${APP_DOMAIN}/api/post/${item.postId}`,
+      headers: Object.assign(contentTypeHeaders, authHeaders),
+    })
+      .then(() => {
+        alert('게시글이 삭제되었습니다.')
+        navigate('/')
+      })
+      .catch(apiErrorHandler)
+      getPostRequest(dispatch)
+  }
 
-  // const handleLikeBtn = () => {
-  //   likeRequest(item.postId)((res: AxiosResponse) => {
-  //     console.log(res)
-  //     navigate('/')
-  //   })
-  // }
+  const handleLikeBtn = () => {
+    axios({
+      method: 'post',
+      url: `${APP_DOMAIN}/api/post/${item.postId}/like`,
+      headers: Object.assign(contentTypeHeaders, authHeaders),
+    })
+      .then(() => {
+        navigate('/', { replace: true })
+      })
+      .catch(apiErrorHandler)
+      getPostRequest(dispatch)
+  }
 
   return (
     <div className='bg-white border border-slate-100'>
@@ -44,11 +64,11 @@ export default function PostCard({ item }: { item: IPost }) {
         <div className='flex gap-3 items-center'>
           <div className='bg-slate-700 w-10 h-10 rounded-full'></div>
           <div className='flex flex-col gap-0.5'>
-            <span className='font-semibold'>홍길동</span>
-            <span className='text-xs text-gray-400'>6월 10일 오후 03:22</span>
+            <span className='font-semibold'>{item.nickname}</span>
+            <span className='text-xs text-gray-400'>{`${t.notThisYearKor} ${t.month}월 ${t.date}일 ${t.ampmKor}`}</span>
           </div>
         </div>
-        {user?.id === item.userId ? (
+        {user?.userId === item.userId ? (
           <div className='flex items-center gap-3'>
             <div
               onClick={() => {
@@ -57,9 +77,9 @@ export default function PostCard({ item }: { item: IPost }) {
             >
               <PencilAltIcon className='w-6 h-6 text-theme1' />
             </div>
-            {/* <div onClick={handlePostDelete}>
+            <div onClick={handlePostDelete}>
               <TrashIcon className='w-6 h-6 text-theme1' />
-            </div> */}
+            </div>
           </div>
         ) : null}
       </div>
@@ -79,18 +99,24 @@ export default function PostCard({ item }: { item: IPost }) {
           </div>
         </div>
         <div className='w-full h-72 md:h-80'>
-          <img src={`http://localhost:8080/images/${item.image}`} />
+          <img className='w-full h-full' src={`${APP_DOMAIN}/images/${item.image}`} />
         </div>
       </div>
 
       <div className='flex justify-between items-center p-3 border-t border-t-slate-100'>
-        <span className='text-sm'>좋아요 0개</span>
+        <span className='text-sm'>{`좋아요 ${item.likeCount}개`}</span>
         <span>
-          {/* {item.likeByMe === 'true' ? (
-            <HeartIconSolid className='w-6 h-6 text-red-400' onClick={handleLikeBtn} />
+          {item.likeByMe === 'true' ? (
+            <HeartIconSolid
+              className='w-6 h-6 text-red-400 hover:cursor-pointer'
+              onClick={handleLikeBtn}
+            />
           ) : (
-            <HeartIcon className='w-6 h-6 text-gray-600' onClick={handleLikeBtn} />
-          )} */}
+            <HeartIcon
+              className='w-6 h-6 text-gray-600 hover:cursor-pointer'
+              onClick={handleLikeBtn}
+            />
+          )}
         </span>
       </div>
     </div>

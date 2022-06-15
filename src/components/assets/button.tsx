@@ -1,4 +1,4 @@
-import { cls } from '../../functions'
+import { cls } from '../../functions/utils'
 
 interface ButtonProps {
   text: string

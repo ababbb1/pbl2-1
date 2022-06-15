@@ -9,16 +9,15 @@ export interface JoinForm {
 
 export interface PostForm {
   content: string
-  image: string
+  images: FileList
   layout: 'default' | 'left' | 'right'
 }
 
 export interface IUser {
   email: string
   iat: number
-  id: number
-  nickname: string
   userId: number
+  nickname: string
 }
 
 export interface IPost {
@@ -30,4 +29,6 @@ export interface IPost {
   title: string
   userId: number
   layout: 'default' | 'left' | 'right'
+  nickname: string
+  createdAt: string
 }

@@ -1,16 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { Page } from '../interfaces'
+import { IPost, Page } from '../interfaces/app'
 import { RootState } from './configStore'
-
-interface IPost {
-  postId: number
-  title: string
-  content: string
-  userId: number
-  image: string
-  likeByMe: boolean
-  likeCount: 10
-}
 
 interface AppState {
   currentPage: Page

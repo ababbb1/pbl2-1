@@ -1,9 +1,13 @@
-import { useForm } from 'react-hook-form'
+import { SubmitHandler, useForm } from 'react-hook-form'
 import { useSetPage } from '../../hooks'
-import { emailCheck, registerRequest } from '../../functions'
-import { JoinForm } from '../../interfaces'
 import { useNavigate } from 'react-router-dom'
-import { Button, Input, ErrorMessage } from '../../components'
+import { JoinForm } from '../../interfaces/app'
+import { apiErrorHandler, APP_DOMAIN, contentTypeHeaders } from '../../functions/requests'
+import Input from '../assets/input'
+import { emailCheck } from '../../functions/utils'
+import ErrorMessage from '../assets/errorMessage'
+import Button from '../assets/button'
+import axios from 'axios'
 
 export default function Join() {
   useSetPage('join')
@@ -15,10 +19,19 @@ export default function Join() {
     formState: { errors },
   } = useForm<JoinForm>({ mode: 'onBlur' })
 
-  const onValid = registerRequest(() => {
-    alert('회원가입 성공')
-    navigate('/login')
-  })
+  const onValid: SubmitHandler<JoinForm> = (data: JoinForm) => {
+    axios({
+      method: 'post',
+      url: `${APP_DOMAIN}/api/register`,
+      data,
+      headers: contentTypeHeaders,
+    })
+      .then(() => {
+        alert('회원가입 성공')
+        navigate('/login')
+      })
+      .catch(apiErrorHandler)
+  }
 
   return (
     <form

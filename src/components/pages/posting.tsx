@@ -1,36 +1,44 @@
-import { useForm } from 'react-hook-form'
+import { SubmitHandler, useForm } from 'react-hook-form'
 import { useSetPage } from '../../hooks'
 import { PlusIcon, XIcon } from '@heroicons/react/outline'
-import { cls, postingRequest, postModifyRequest } from '../../functions'
-import { ErrorMessage, SelectPostLayout, Button } from '../../components'
 import React, { useEffect, useRef, useState } from 'react'
-import { AxiosResponse } from 'axios'
-import { PostForm } from '../../interfaces'
+import axios, { AxiosRequestConfig } from 'axios'
 import { useLocation, useNavigate } from 'react-router-dom'
+import { cls } from '../../functions/utils'
+import { PostForm } from '../../interfaces/app'
+import SelectPostLayout from '../assets/selectPostLayout'
+import ErrorMessage from '../assets/errorMessage'
+import Button from '../assets/button'
+import {
+  apiErrorHandler,
+  APP_DOMAIN,
+  authHeaders,
+  contentTypeHeaders,
+  getPostRequest,
+} from '../../functions/requests'
+import { useDispatch } from 'react-redux'
 
 export default function Posting() {
   useSetPage('posting')
 
-  const {
-    register,
-    handleSubmit,
-    watch,
-    resetField,
-    setValue,
-    getValues,
-    formState: { errors },
-  } = useForm<PostForm>({ mode: 'onChange' })
+  const { register, handleSubmit, watch, resetField, setValue, getValues, formState } =
+    useForm<PostForm>({ mode: 'onChange' })
   const [previewImg, setPreviewImg] = useState('')
   const { state }: any = useLocation()
   const navigate = useNavigate()
+  const dispatch = useDispatch()
+
   const contentResetBtn = useRef<HTMLDivElement>(null)
-  const images = watch('image')
+
+  const images = watch('images')
+  const [contentResetBtnState, setContentResetBtnState] = useState<'flex' | 'hidden'>('flex')
 
   useEffect(() => {
     if (state) {
       setValue('content', state.content)
-      contentResetBtn.current?.classList.remove('hidden')
+      setValue('layout', state.layout)
     }
+    getValues('content') ? setContentResetBtnState('flex') : setContentResetBtnState('hidden')
   }, [])
 
   useEffect(() => {
@@ -40,40 +48,48 @@ export default function Posting() {
     }
   }, [images])
 
-  // const onValid = state
-  //   ? postModifyRequest(state.postId)((res: AxiosResponse) => {
-  //       console.log(state.postId, res)
-  //       alert('게시글이 수정되었습니다.')
-  //       navigate('/', { replace: true })
-  //     })
-  const onValid = (data: any) => {
+  const onValid: SubmitHandler<PostForm> = (data: PostForm) => {
+    const path = state ? `post/${state.postId}` : 'post'
+
     const formData = new FormData()
     formData.append('content', data.content)
-    formData.append('image', data.image[0])
+    formData.append('image', data.images[0])
     formData.append('layout', data.layout)
 
-    console.dir(formData)
-    postingRequest((res: AxiosResponse) => {
-      console.log(res)
-      alert('게시글이 등록되었습니다.')
+    const onSuccess = (word: string) => {
+      alert(`게시글이 ${word}되었습니다.`)
       navigate('/', { replace: true })
-    })(formData)
+      getPostRequest(dispatch)
+    }
+
+    const cb = state ? onSuccess('수정') : onSuccess('등록')
+
+    const config: AxiosRequestConfig = {
+      method: 'post',
+      url: `${APP_DOMAIN}/api/${path}`,
+      data: formData,
+      headers: Object.assign(contentTypeHeaders, authHeaders),
+    }
+
+    axios(config)
+      .then(() => {
+        cb
+      })
+      .catch(apiErrorHandler)
   }
 
   const handleImageResetBtn = () => {
     setPreviewImg('')
-    resetField('image')
+    resetField('images')
   }
 
   const handleContentResetBtn = () => {
     resetField('content')
-    contentResetBtn.current?.classList.add('hidden')
+    setContentResetBtnState('hidden')
   }
 
   const handleContentChange = () => {
-    getValues('content')
-      ? contentResetBtn.current?.classList.remove('hidden')
-      : contentResetBtn.current?.classList?.add('hidden')
+    watch('content') ? setContentResetBtnState('flex') : setContentResetBtnState('hidden')
   }
 
   return (
@@ -82,7 +98,7 @@ export default function Posting() {
       className='flex flex-col items-center gap-6 px-4 py-16 w-full md:max-w-md'
     >
       <div className='w-full flex flex-col items-center gap-2'>
-        <ErrorMessage message={errors.layout?.message} />
+        <ErrorMessage message={formState.errors.layout?.message} />
         <SelectPostLayout
           register={register('layout', {
             required: '레이아웃을 선택해주세요.',
@@ -95,7 +111,7 @@ export default function Posting() {
           placeholder='무슨 생각을 하고 계신가요?'
           className={cls(
             'w-full h-48 resize-none py-5 px-7 border rounded-md',
-            errors.content
+            formState.errors.content
               ? 'border-red-400 focus:outline-red-400'
               : 'border-gray-300 focus:outline-gray-500',
           )}
@@ -107,7 +123,10 @@ export default function Posting() {
         <div
           ref={contentResetBtn}
           onClick={handleContentResetBtn}
-          className='hidden absolute w-5 h-5 top-2 right-2 bg-slate-200 rounded-full shadow-sm flex justify-center items-center hover:cursor-pointer'
+          className={cls(
+            contentResetBtnState,
+            'absolute w-5 h-5 top-2 right-2 bg-slate-200 rounded-full shadow-sm justify-center items-center hover:cursor-pointer',
+          )}
         >
           <XIcon className='w-4 h-4 text-slate-600' />
         </div>
@@ -116,15 +135,15 @@ export default function Posting() {
       <div className='w-full border border-gray-300 rounded-md p-2'>
         <div className='w-full relative'>
           {previewImg ? (
-            <>
+            <div>
               <img src={previewImg} alt='preview-img' className='w-full' />
               <div
                 onClick={handleImageResetBtn}
-                className='absolute w-7 h-7 top-2 right-2 bg-slate-200 rounded-full shadow-sm flex justify-center items-center hover:cursor-pointer'
+                className='absolute w-5 h-5 top-2 right-2 bg-slate-200 rounded-full shadow-sm flex justify-center items-center hover:cursor-pointer'
               >
-                <XIcon className='w-6 h-6 text-slate-600' />
+                <XIcon className='w-4 h-4 text-slate-600' />
               </div>
-            </>
+            </div>
           ) : (
             <label
               htmlFor='file'
@@ -140,12 +159,12 @@ export default function Posting() {
           type='file'
           className='hidden'
           accept='image/*'
-          {...register('image', {
+          {...register('images', {
             required: '이미지를 업로드해주세요.',
           })}
         />
       </div>
-      <ErrorMessage message={errors.image?.message} />
+      <ErrorMessage message={formState.errors.images?.message} />
 
       <Button text='게시' type='submit' style='text-white bg-theme1 h-12 mt-4' />
     </form>

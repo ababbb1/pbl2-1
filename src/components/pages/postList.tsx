@@ -1,11 +1,14 @@
 import { useSetPage } from '../../hooks'
-import { FloatingButton, PostCard } from '../../components'
 import { PencilIcon } from '@heroicons/react/outline'
 import { FixedSizeList } from 'react-window'
 import InfiniteLoader from 'react-window-infinite-loader'
 import { useEffect, useState } from 'react'
-import { AxiosResponse } from 'axios'
-import { getPostsRequest } from '../../functions'
+import PostCard from '../layouts/postCard'
+import FloatingButton from '../assets/floatingButton'
+import axios, { AxiosResponse } from 'axios'
+import { apiErrorHandler, APP_DOMAIN, getPostRequest } from '../../functions/requests'
+import { useDispatch, useSelector } from 'react-redux'
+import { getPostList, setPostList } from '../../store/reducer'
 
 const LOADING = 1
 const LOADED = 2
@@ -20,18 +23,12 @@ const loadMoreItems = (startIndex: number, stopIndex: number) => {
 
 export default function PostList() {
   useSetPage('home')
-  const [list, setList] = useState([])
+
+  const dispatch = useDispatch()
+  const list = useSelector(getPostList)
 
   useEffect(() => {
-    console.log('rendered')
-    getPostsRequest((res: AxiosResponse) => {
-      console.log(res)
-      setList(res.data.post_list)
-    })()
-  }, [])
-
-  useEffect(() => {
-    console.log(list)
+    getPostRequest(dispatch)
   }, [list])
 
   const Row = ({ index, style }: { index: number; style: any; data: any }) => {
@@ -52,14 +49,14 @@ export default function PostList() {
       <div className='w-full max-w-md'>
         <InfiniteLoader
           isItemLoaded={isItemLoaded}
-          itemCount={list.length}
+          itemCount={list?.length}
           loadMoreItems={loadMoreItems}
         >
           {({ onItemsRendered, ref }) => (
             <FixedSizeList
               className='List'
-              height={10000}
-              itemCount={list.length}
+              height={1200}
+              itemCount={list?.length}
               itemSize={500}
               onItemsRendered={onItemsRendered}
               ref={ref}

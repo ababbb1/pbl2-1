@@ -1,9 +1,12 @@
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { useSetPage } from '../../hooks'
-import { Button, Input, ErrorMessage } from '../../components'
 import { Link, useNavigate } from 'react-router-dom'
-import { emailCheck, loginRequest } from '../../functions'
-import { AxiosResponse } from 'axios'
+import axios, { AxiosResponse } from 'axios'
+import { apiErrorHandler, APP_DOMAIN, contentTypeHeaders } from '../../functions/requests'
+import Input from '../assets/input'
+import { emailCheck } from '../../functions/utils'
+import ErrorMessage from '../assets/errorMessage'
+import Button from '../assets/button'
 
 export interface LoginForm {
   email: string
@@ -20,12 +23,19 @@ export default function Login() {
     formState: { errors },
   } = useForm<LoginForm>({ mode: 'onBlur' })
 
-  const onValid: SubmitHandler<LoginForm> = loginRequest((res: AxiosResponse<any, any>) => {
-    console.log(res.data)
-    localStorage.setItem('token', JSON.stringify(res.data.token))
-    navigate('../', { replace: true })
-    console.log(localStorage.getItem('token'))
-  })
+  const onValid: SubmitHandler<LoginForm> = (data: LoginForm) => {
+    axios({
+      method: 'post',
+      url: `${APP_DOMAIN}/api/login`,
+      data,
+      headers: contentTypeHeaders,
+    })
+      .then((res: AxiosResponse) => {
+        localStorage.setItem('token', JSON.stringify(res.data.result.token))
+        navigate('/', { replace: true })
+      })
+      .catch(apiErrorHandler)
+  }
 
   return (
     <form
