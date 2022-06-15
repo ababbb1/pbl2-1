@@ -8,6 +8,10 @@ import { getPostList } from '../../store/reducer'
 import { useAppDispatch, useAppSelector } from '../../store/configStore'
 import InfiniteLoader from 'react-window-infinite-loader'
 import { FixedSizeList } from 'react-window'
+import AutoSizer from 'react-virtualized-auto-sizer'
+import { Route, Routes, useLocation } from 'react-router-dom'
+import Redirect from '../route/redirect'
+import PostCardModal from '../layouts/postCardModal'
 
 const LOADING = 1
 const LOADED = 2
@@ -36,9 +40,12 @@ export default function PostList() {
         className='ListItem'
         style={{
           ...style,
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
         }}
       >
-        <PostCard item={list[index]} />
+        <PostCard item={list[index]} isModal={false} />
       </div>
     )
   }
@@ -46,25 +53,29 @@ export default function PostList() {
   return (
     <div className='w-full bg-gray-200 min-h-screen flex justify-center'>
       <div className='w-full'>
-      <InfiniteLoader
-          isItemLoaded={isItemLoaded}
-          itemCount={list?.length}
-          loadMoreItems={loadMoreItems}
-        >
-          {({ onItemsRendered, ref }) => (
-            <FixedSizeList
-              className='List'
-              height={1200}
+        <AutoSizer>
+          {({ height, width }) => (
+            <InfiniteLoader
+              isItemLoaded={isItemLoaded}
               itemCount={list?.length}
-              itemSize={500}
-              onItemsRendered={onItemsRendered}
-              ref={ref}
-              width={'100%'}
+              loadMoreItems={loadMoreItems}
             >
-              {Row}
-            </FixedSizeList>
+              {({ onItemsRendered, ref }) => (
+                <FixedSizeList
+                  className='List'
+                  height={height}
+                  itemCount={list?.length}
+                  itemSize={460}
+                  onItemsRendered={onItemsRendered}
+                  ref={ref}
+                  width={width}
+                >
+                  {Row}
+                </FixedSizeList>
+              )}
+            </InfiniteLoader>
           )}
-        </InfiniteLoader>
+        </AutoSizer>
       </div>
       <FloatingButton path={'/posting'}>
         <PencilIcon className='text-white w-6 h-6' />

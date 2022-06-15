@@ -1,6 +1,7 @@
 import React from 'react'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { Routes, Route, useLocation } from 'react-router-dom'
 import Nav from './components/layouts/nav'
+import PostCardModal from './components/layouts/postCardModal'
 import Detail from './components/pages/detail'
 import Join from './components/pages/join'
 import Login from './components/pages/login'
@@ -8,13 +9,17 @@ import Mypage from './components/pages/mypage'
 import Posting from './components/pages/posting'
 import PostList from './components/pages/postList'
 import Redirect from './components/route/redirect'
+import { cls } from './functions/utils'
 
 function App() {
+  const location: any = useLocation()
+  const background = location.state && location.state.background
+
   return (
-    <BrowserRouter>
+    <>
+      <div className='pt-12 lg:pt-16 w-full flex justify-center'>
       <Nav />
-      <div className='w-full pt-12 lg:pt-16 flex justify-center'>
-        <Routes>
+        <Routes location={background || location}>
           {/* public */}
           <Route path='/' element={<PostList />} />
           <Route path='/post' element={<Detail />} />
@@ -63,8 +68,18 @@ function App() {
             }
           />
         </Routes>
+        {background && (
+        <Routes>
+          <Route
+              path='/detail/:id'
+              element={
+                <PostCardModal item={location.state.item} />
+              }
+            />
+        </Routes>
+      )}
       </div>
-    </BrowserRouter>
+    </>
   )
 }
 

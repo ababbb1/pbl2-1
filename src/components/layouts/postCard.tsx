@@ -1,9 +1,9 @@
 import { PencilAltIcon, TrashIcon, HeartIcon } from '@heroicons/react/outline'
 import { HeartIcon as HeartIconSolid } from '@heroicons/react/solid'
-import { useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useEffect, useRef, useState } from 'react'
-import axios, { AxiosResponse } from 'axios'
-import { cls, getItemsFromDateObject, getUserInfo, urlToFile } from '../../functions/utils'
+import axios from 'axios'
+import { cls, getItemsFromDateObject, getUserInfo } from '../../functions/utils'
 import { IPost } from '../../interfaces/app'
 import {
   apiErrorHandler,
@@ -13,12 +13,15 @@ import {
   fetchItem,
   fetchList,
 } from '../../functions/requests'
-import { useDispatch } from 'react-redux'
 import { useAppDispatch } from '../../store/configStore'
+import { useAuth } from '../../hooks'
 
-interface PostCardProps {
+export interface PostCardProps {
   item: IPost
+  isModal: boolean
 }
+
+const SUBSTR_COUNT = 22
 
 export default function PostCard(props: PostCardProps) {
   const div = useRef<HTMLDivElement>(null)
@@ -28,16 +31,12 @@ export default function PostCard(props: PostCardProps) {
   const dispatch = useAppDispatch()
   const [item, setItem] = useState<IPost>(props.item)
   const t = getItemsFromDateObject(new Date(item.createdAt))
+  const location = useLocation()
+  const [isModal, setIsModal] = useState(props.isModal)
 
   useEffect(() => {
-    const pre = div.current?.firstChild
-    const str = pre?.textContent
-    if (item.layout === 'default' && str && str.length > 22) {
-      pre ? (pre.textContent = str.substring(0, 22) + ' ...') : null
-      span.current ? span.current.classList.remove('hidden') : null
-    }
-    fetchItem(props.item.postId)
-      .then((i) => {
+    if (useAuth())
+      fetchItem(props.item.postId).then((i) => {
         setItem({
           ...item,
           likeByMe: i.likeByMe,
@@ -64,28 +63,32 @@ export default function PostCard(props: PostCardProps) {
   }
 
   const handleLikeBtn = () => {
+    if (!useAuth()) {
+      alert('로그인 후 이용해주세요.')
+      navigate('/login', { replace: true })
+      return
+    }
     axios({
       method: 'post',
       url: `${APP_DOMAIN}/api/post/${item.postId}/like`,
       headers: Object.assign(contentTypeHeaders, authHeaders),
     })
       .then(async () => {
-        fetchItem(item.postId)
-          .then((i) => {
-            setItem({
-              ...item,
-              likeByMe: i.likeByMe,
-              likeCount: i.likeCount,
-              userId: i.userId,
-            })
+        fetchItem(item.postId).then((i) => {
+          setItem({
+            ...item,
+            likeByMe: i.likeByMe,
+            likeCount: i.likeCount,
+            userId: i.userId,
           })
+        })
       })
       .catch(apiErrorHandler)
   }
 
   return (
-    <div className='bg-white border border-slate-100'>
-      <div className='flex justify-between p-3 border-b border-b-slate-100'>
+    <div className={cls(isModal ? 'md:max-h-[50rem] md:h-full md:max-w-[40rem] lg:h-full lg:max-w-[60rem] lg:max-h-[50rem]' : 'h-[430px]', 'bg-white border border-slate-100 w-full max-w-[25rem]')}>
+      <div className='flex h-15 justify-between p-2 border-b border-b-slate-100'>
         <div className='flex gap-3 items-center'>
           <div className='bg-slate-700 w-10 h-10 rounded-full'></div>
           <div className='flex flex-col gap-0.5'>
@@ -109,26 +112,60 @@ export default function PostCard(props: PostCardProps) {
         ) : null}
       </div>
 
-      <div className={cls('flex', item.layout === 'default' ? 'flex-col' : item.layout === 'left' ? 'flex-row-reverse': '')}>
+      <div
+        className={cls(
+          'flex h-full', isModal ? 'md:max-h-[40rem] lg:max-h-[80%]': 'max-h-[20rem]',
+          item.layout === 'default' ? 'flex-col' : item.layout === 'left' ? 'flex-row-reverse' : '',
+        )}
+      >
         <div
           className={cls(
-            'p-3 text-sm text-gray-800 flex w-full'
+            'p-3 text-sm text-gray-800 flex w-full',
+            item.layout === 'default' ? 'h-11' : 'max-w-[50%]',
           )}
         >
-          <div ref={div} className='flex'>
-            <pre className='break-words whitespace-pre-wrap'>{item.content}</pre>
-            <span ref={span} className='hidden ml-2 font-semibold text-gray-500'>
-              더보기
-            </span>
+          <div ref={div} className='flex w-full'>
+            <div className='w-full'>
+              {
+              !isModal ? item.content.split('\n').map((x, i) => {
+                if (
+                  i === 0 &&
+                  item.layout === 'default' &&
+                  x.length > SUBSTR_COUNT
+                ) {
+                  return (
+                    <p key={x} className='hidden first:block w-full break-words'>
+                      {x.substring(0, SUBSTR_COUNT) + ' ...'}
+                      <Link
+                        to={`/detail/${item.postId}`}
+                        state={{ background: location, item: item }}
+                      >
+                        <span ref={span} className='ml-2 font-semibold text-gray-500'>
+                          더보기
+                        </span>
+                      </Link>
+                    </p>
+                  )
+                } else {
+                  return (
+                    <p key={x} className='break-words'>
+                      {x}
+                    </p>
+                  )
+                }
+              }): <p className='break-words'>{item.content}</p>}
+            </div>
           </div>
         </div>
-        <div className='w-full h-72 md:h-80'>
-          <img className='w-full h-full' src={`${APP_DOMAIN}/images/${item.image}`} />
+        <div className='w-full h-full overflow-y-auto'>
+          <Link to={`/detail/${item.postId}`} state={{ background: location, item: item }}>
+            <img className='w-full h-full' src={`${APP_DOMAIN}/images/${item.image}`} />
+          </Link>
         </div>
       </div>
 
       <div className='flex justify-between items-center p-3 border-t border-t-slate-100'>
-        <span className='text-sm'>{`좋아요 ${item.likeCount}개`}</span>
+        <span className='text-sm'>{`좋아요 ${item.likeCount || 0}개`}</span>
         <span>
           {item.likeByMe ? (
             <HeartIconSolid

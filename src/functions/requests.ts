@@ -7,7 +7,7 @@ import { AppDispatch, useAppDispatch } from '../store/configStore'
 import { setPostList } from '../store/reducer'
 
 const token = localStorage.getItem('token')
-export const APP_DOMAIN = 'http://localhost:8080'
+export const APP_DOMAIN = 'http://3.34.190.151'
 export const contentTypeHeaders: AxiosRequestHeaders = { 'Content-Type': 'application/json' }
 export const authHeaders: AxiosRequestHeaders = {
   Authorization: `Bearer ${token?.replaceAll('"', '')}`,
@@ -28,9 +28,8 @@ export const fetchList = async (dispatch: AppDispatch) => {
 export const fetchItem = async (postId: number) => {
   const res: any = await axios({
     url: `${APP_DOMAIN}/api/post/${postId}`,
-    headers: authHeaders
-  })
-    .catch(apiErrorHandler)
+    headers: authHeaders,
+  }).catch(apiErrorHandler)
 
   const item: IPost = res.data.result
   return item

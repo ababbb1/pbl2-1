@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { useAuth } from '../../hooks'
 import { getCurrentPage } from '../../store/reducer'
+import { cls } from '../../functions/utils'
 
 export default function Nav() {
   const page = useSelector(getCurrentPage)
@@ -10,7 +11,7 @@ export default function Nav() {
 
   return (
     <>
-      <div className='fixed top-0 left-0 w-full h-12 bg-theme1 flex items-center justify-between px-4 shadow-sm z-50 lg:hidden'>
+      <div className='fixed top-0 left-0 w-full h-12 bg-theme1 flex items-center justify-between px-4 shadow-sm z-40 lg:hidden'>
         <div className='relative w-8'>
           {page === 'home' ? (
             useAuth() && (
@@ -43,7 +44,7 @@ export default function Nav() {
         </div>
       </div>
 
-      <div className='fixed top-0 left-0 w-full h-16 bg-white hidden lg:flex items-center justify-between px-6 shadow-md z-50 '>
+      <div className='fixed top-0 left-0 w-full h-16 bg-white hidden lg:flex items-center justify-between px-6 shadow-md z-40'>
         <div className='flex items-center gap-8'>
           <Link to={'/'}>
             <div className='font-semibold text-2xl text-theme1 select-none'>항해99</div>
