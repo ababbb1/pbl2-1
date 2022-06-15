@@ -1,7 +1,7 @@
 import { PencilAltIcon, TrashIcon, HeartIcon } from '@heroicons/react/outline'
 import { HeartIcon as HeartIconSolid } from '@heroicons/react/solid'
 import { useNavigate } from 'react-router-dom'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import axios, { AxiosResponse } from 'axios'
 import { cls, getItemsFromDateObject, getUserInfo, urlToFile } from '../../functions/utils'
 import { IPost } from '../../interfaces/app'
@@ -10,39 +10,50 @@ import {
   APP_DOMAIN,
   authHeaders,
   contentTypeHeaders,
-  getPostRequest,
+  fetchItem,
+  fetchList,
 } from '../../functions/requests'
 import { useDispatch } from 'react-redux'
+import { useAppDispatch } from '../../store/configStore'
 
-export default function PostCard({ item }: { item: IPost }) {
+interface PostCardProps {
+  item: IPost
+}
+
+export default function PostCard(props: PostCardProps) {
   const div = useRef<HTMLDivElement>(null)
   const span = useRef<HTMLSpanElement>(null)
   const user = getUserInfo()
   const navigate = useNavigate()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
+  const [item, setItem] = useState(props.item)
   const t = getItemsFromDateObject(new Date(item.createdAt))
 
   useEffect(() => {
     const pre = div.current?.firstChild
     const str = pre?.textContent
-    if (str && str.length > 22) {
+    if (item.layout === 'default' && str && str.length > 22) {
       pre ? (pre.textContent = str.substring(0, 22) + ' ...') : null
       span.current ? span.current.classList.remove('hidden') : null
     }
+    fetchItem(item.postId)
+      .then(res => (res))
   }, [])
 
   const handlePostDelete = () => {
-    axios({
-      method: 'delete',
-      url: `${APP_DOMAIN}/api/post/${item.postId}`,
-      headers: Object.assign(contentTypeHeaders, authHeaders),
-    })
-      .then(() => {
-        alert('게시글이 삭제되었습니다.')
-        navigate('/')
+    if (confirm('삭제하시겠습니까?')) {
+      axios({
+        method: 'delete',
+        url: `${APP_DOMAIN}/api/post/${item.postId}`,
+        headers: Object.assign(contentTypeHeaders, authHeaders),
       })
-      .catch(apiErrorHandler)
-      getPostRequest(dispatch)
+        .then(async () => {
+          await fetchList(dispatch)
+          alert('게시글이 삭제되었습니다.')
+          navigate('/')
+        })
+        .catch(apiErrorHandler)
+    }
   }
 
   const handleLikeBtn = () => {
@@ -51,11 +62,13 @@ export default function PostCard({ item }: { item: IPost }) {
       url: `${APP_DOMAIN}/api/post/${item.postId}/like`,
       headers: Object.assign(contentTypeHeaders, authHeaders),
     })
-      .then(() => {
-        navigate('/', { replace: true })
+      .then(async () => {
+        fetchItem(item.postId)
+          .then((res: any) => {
+            setItem(res.data.result)
+          })
       })
       .catch(apiErrorHandler)
-      getPostRequest(dispatch)
   }
 
   return (
@@ -75,20 +88,19 @@ export default function PostCard({ item }: { item: IPost }) {
                 navigate(`/modify/${item.postId}`, { state: item })
               }}
             >
-              <PencilAltIcon className='w-6 h-6 text-theme1' />
+              <PencilAltIcon className='w-6 h-6 text-theme1 hover:cursor-pointer' />
             </div>
             <div onClick={handlePostDelete}>
-              <TrashIcon className='w-6 h-6 text-theme1' />
+              <TrashIcon className='w-6 h-6 text-theme1 hover:cursor-pointer' />
             </div>
           </div>
         ) : null}
       </div>
 
-      <div>
+      <div className={cls('flex', item.layout === 'default' ? 'flex-col' : item.layout === 'left' ? 'flex-row-reverse': '')}>
         <div
           className={cls(
-            'p-3 text-sm text-gray-800 flex',
-            item.layout === 'default' ? 'flex-col' : item.layout === 'right' ? 'justify-end' : '',
+            'p-3 text-sm text-gray-800 flex w-full'
           )}
         >
           <div ref={div} className='flex'>

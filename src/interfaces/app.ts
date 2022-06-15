@@ -1,4 +1,5 @@
 export type Page = 'home' | 'login' | 'join' | 'posting' | 'detail' | 'mypage'
+export type LayoutType = 'default' | 'left' | 'right'
 
 export interface JoinForm {
   nickname: string
@@ -28,7 +29,7 @@ export interface IPost {
   postId: number
   title: string
   userId: number
-  layout: 'default' | 'left' | 'right'
+  layout: LayoutType
   nickname: string
   createdAt: string
 }

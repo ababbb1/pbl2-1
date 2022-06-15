@@ -5,7 +5,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import axios, { AxiosRequestConfig } from 'axios'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { cls } from '../../functions/utils'
-import { PostForm } from '../../interfaces/app'
+import { IPost, LayoutType, PostForm } from '../../interfaces/app'
 import SelectPostLayout from '../assets/selectPostLayout'
 import ErrorMessage from '../assets/errorMessage'
 import Button from '../assets/button'
@@ -14,9 +14,9 @@ import {
   APP_DOMAIN,
   authHeaders,
   contentTypeHeaders,
-  getPostRequest,
+  fetchList,
 } from '../../functions/requests'
-import { useDispatch } from 'react-redux'
+import { useAppDispatch } from '../../store/configStore'
 
 export default function Posting() {
   useSetPage('posting')
@@ -26,7 +26,8 @@ export default function Posting() {
   const [previewImg, setPreviewImg] = useState('')
   const { state }: any = useLocation()
   const navigate = useNavigate()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
+  const [layoutState, setLayoutState] = useState<LayoutType>('default')
 
   const contentResetBtn = useRef<HTMLDivElement>(null)
 
@@ -56,10 +57,10 @@ export default function Posting() {
     formData.append('image', data.images[0])
     formData.append('layout', data.layout)
 
-    const onSuccess = (word: string) => {
+    const onSuccess = async (word: string) => {
+      await fetchList(dispatch)
       alert(`게시글이 ${word}되었습니다.`)
       navigate('/', { replace: true })
-      getPostRequest(dispatch)
     }
 
     const cb = state ? onSuccess('수정') : onSuccess('등록')
@@ -103,14 +104,16 @@ export default function Posting() {
           register={register('layout', {
             required: '레이아웃을 선택해주세요.',
           })}
+          setLayoutState={setLayoutState}
         />
       </div>
 
+      <div className={cls('flex gap-4 w-full min-h-[20rem]', layoutState === 'default' ? 'flex-col' : layoutState === 'left' ? 'flex-row-reverse': '')}>
       <div className='w-full relative'>
         <textarea
           placeholder='무슨 생각을 하고 계신가요?'
           className={cls(
-            'w-full h-48 resize-none py-5 px-7 border rounded-md',
+            'w-full h-full min-h-[8rem] md:min-h-[12rem] resize-none py-5 px-7 border rounded-md',
             formState.errors.content
               ? 'border-red-400 focus:outline-red-400'
               : 'border-gray-300 focus:outline-gray-500',
@@ -133,10 +136,10 @@ export default function Posting() {
       </div>
 
       <div className='w-full border border-gray-300 rounded-md p-2'>
-        <div className='w-full relative'>
+        <div className='w-full relative h-full'>
           {previewImg ? (
-            <div>
-              <img src={previewImg} alt='preview-img' className='w-full' />
+            <div className='h-full'>
+              <img src={previewImg} alt='preview-img' className='w-full h-full rounded-md' />
               <div
                 onClick={handleImageResetBtn}
                 className='absolute w-5 h-5 top-2 right-2 bg-slate-200 rounded-full shadow-sm flex justify-center items-center hover:cursor-pointer'
@@ -147,7 +150,7 @@ export default function Posting() {
           ) : (
             <label
               htmlFor='file'
-              className='w-full h-32 rounded-md bg-gray-100 flex items-center justify-center gap-2 hover:cursor-pointer'
+              className='w-full h-full min-h-[10rem] rounded-md bg-gray-100 flex items-center justify-center gap-2 hover:cursor-pointer'
             >
               <span className='font-semibold text-gray-700 mt-0.5 select-none'>사진 추가</span>
               <PlusIcon className='w-5 h-5 text-gray-700' />
@@ -163,8 +166,9 @@ export default function Posting() {
             required: '이미지를 업로드해주세요.',
           })}
         />
+        <ErrorMessage message={formState.errors.images?.message} />
       </div>
-      <ErrorMessage message={formState.errors.images?.message} />
+      </div>
 
       <Button text='게시' type='submit' style='text-white bg-theme1 h-12 mt-4' />
     </form>

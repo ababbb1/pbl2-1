@@ -1,9 +1,12 @@
 import { UseFormRegisterReturn } from 'react-hook-form'
+import { LayoutType } from '../../interfaces/app'
 
 export default function SelectPostLayout({
   register,
+  setLayoutState
 }: {
   register: UseFormRegisterReturn<'layout'>
+  setLayoutState: React.Dispatch<React.SetStateAction<LayoutType>>
 }) {
   return (
     <div className='flex flex-col w-full gap-2 items-center'>
@@ -12,6 +15,7 @@ export default function SelectPostLayout({
         <li>
           <input type='radio' id='default' value='default' className='peer hidden' {...register} />
           <label
+            onClick={() => {setLayoutState('default')}}
             htmlFor='default'
             className='flex flex-col w-10 h-10 bg-gray-200 rounded-sm shadow-md mx-1 hover:cursor-pointer peer-checked:w-14 peer-checked:h-14 peer-checked:bg-gray-300 peer-checked:ring ring-theme1'
           >
@@ -29,6 +33,7 @@ export default function SelectPostLayout({
         <li>
           <input type='radio' id='left' value='left' className='peer hidden' {...register} />
           <label
+            onClick={() => {setLayoutState('left')}}
             htmlFor='left'
             className='flex w-12 h-10 bg-gray-200 rounded-sm shadow-md hover:cursor-pointer peer-checked:w-16 peer-checked:h-14 peer-checked:bg-gray-300 peer-checked:ring ring-theme1'
           >
@@ -49,6 +54,7 @@ export default function SelectPostLayout({
         <li>
           <input type='radio' id='right' value='right' className='peer hidden' {...register} />
           <label
+            onClick={() => {setLayoutState('right')}}
             htmlFor='right'
             className='flex w-12 h-10 bg-gray-200 rounded-sm shadow-md hover:cursor-pointer peer-checked:w-16 peer-checked:h-14 peer-checked:bg-gray-300 peer-checked:ring ring-theme1'
           >

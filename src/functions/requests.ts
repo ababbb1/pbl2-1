@@ -3,7 +3,7 @@ import axios, { AxiosError, AxiosRequestHeaders, AxiosResponse } from 'axios'
 import { Dispatch } from 'react'
 import { ResponseFailCallback } from '../interfaces/api'
 import { IPost } from '../interfaces/app'
-import { useAppDispatch } from '../store/hooks'
+import { AppDispatch, useAppDispatch } from '../store/configStore'
 import { setPostList } from '../store/reducer'
 
 const token = localStorage.getItem('token')
@@ -16,11 +16,20 @@ export const apiErrorHandler: ResponseFailCallback = (e: AxiosError<any, any>) =
   console.log(e)
 }
 
-export const getPostRequest = (dispatch: Dispatch<PayloadAction<IPost[]>>) => {
+export const fetchList = async (dispatch: AppDispatch) => {
   axios
     .get(`${APP_DOMAIN}/api/post`)
-    .then((res: AxiosResponse) => {
+    .then((res) => {
       dispatch(setPostList(res.data.result.post_list))
     })
     .catch(apiErrorHandler)
+}
+
+export const fetchItem = async (postId: number) => {
+  const res = await axios({
+    url: `${APP_DOMAIN}/api/post/${postId}`,
+    headers: authHeaders
+  })
+    .catch(apiErrorHandler)
+  return res
 }
