@@ -32,4 +32,5 @@ export interface IPost {
   layout: LayoutType
   nickname: string
   createdAt: string
+  updatedAt: string
 }

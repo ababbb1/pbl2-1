@@ -26,7 +26,7 @@ export default function PostCard(props: PostCardProps) {
   const user = getUserInfo()
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
-  const [item, setItem] = useState(props.item)
+  const [item, setItem] = useState<IPost>(props.item)
   const t = getItemsFromDateObject(new Date(item.createdAt))
 
   useEffect(() => {
@@ -36,8 +36,15 @@ export default function PostCard(props: PostCardProps) {
       pre ? (pre.textContent = str.substring(0, 22) + ' ...') : null
       span.current ? span.current.classList.remove('hidden') : null
     }
-    fetchItem(item.postId)
-      .then(res => (res))
+    fetchItem(props.item.postId)
+      .then((i) => {
+        setItem({
+          ...item,
+          likeByMe: i.likeByMe,
+          likeCount: i.likeCount,
+          userId: i.userId,
+        })
+      })
   }, [])
 
   const handlePostDelete = () => {
@@ -64,8 +71,13 @@ export default function PostCard(props: PostCardProps) {
     })
       .then(async () => {
         fetchItem(item.postId)
-          .then((res: any) => {
-            setItem(res.data.result)
+          .then((i) => {
+            setItem({
+              ...item,
+              likeByMe: i.likeByMe,
+              likeCount: i.likeCount,
+              userId: i.userId,
+            })
           })
       })
       .catch(apiErrorHandler)
@@ -118,9 +130,9 @@ export default function PostCard(props: PostCardProps) {
       <div className='flex justify-between items-center p-3 border-t border-t-slate-100'>
         <span className='text-sm'>{`좋아요 ${item.likeCount}개`}</span>
         <span>
-          {item.likeByMe === 'true' ? (
+          {item.likeByMe ? (
             <HeartIconSolid
-              className='w-6 h-6 text-red-400 hover:cursor-pointer'
+              className='w-6 h-6 text-red-500 hover:cursor-pointer'
               onClick={handleLikeBtn}
             />
           ) : (

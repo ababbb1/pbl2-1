@@ -26,10 +26,12 @@ export const fetchList = async (dispatch: AppDispatch) => {
 }
 
 export const fetchItem = async (postId: number) => {
-  const res = await axios({
+  const res: any = await axios({
     url: `${APP_DOMAIN}/api/post/${postId}`,
     headers: authHeaders
   })
     .catch(apiErrorHandler)
-  return res
+
+  const item: IPost = res.data.result
+  return item
 }
