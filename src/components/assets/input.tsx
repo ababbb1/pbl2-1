@@ -1,4 +1,4 @@
-import { UseFormRegisterReturn } from 'react-hook-form'
+import { FieldError, UseFormRegisterReturn } from 'react-hook-form'
 import { cls } from '../../functions/utils'
 
 interface InputProps {
@@ -7,7 +7,7 @@ interface InputProps {
   placeholder?: string
   register?: UseFormRegisterReturn
   style?: string
-  invalid?: any
+  invalid?: FieldError
 }
 
 export default function Input({ type, label, placeholder, register, style, invalid }: InputProps) {

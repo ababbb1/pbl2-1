@@ -7,7 +7,7 @@ import { AppDispatch, useAppDispatch } from '../store/configStore'
 import { setPostList } from '../store/reducer'
 
 const token = localStorage.getItem('token')
-export const APP_DOMAIN = 'http://3.34.190.151'
+export const APP_DOMAIN = 'http://3.37.89.152'
 export const contentTypeHeaders: AxiosRequestHeaders = { 'Content-Type': 'application/json' }
 export const authHeaders: AxiosRequestHeaders = {
   Authorization: `Bearer ${token?.replaceAll('"', '')}`,
